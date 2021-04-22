@@ -1,0 +1,12 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true,
+    "source.fixAll": true
+  },
+  "editor.insertSpaces": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.detectIndentation": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
