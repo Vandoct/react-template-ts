@@ -21,9 +21,20 @@ jobs:
         with:
           node_version: ${{ matrix.node_version }}
 
-      - name: run CI
-        run: |
-          yarn install
-          yarn lint
-          yarn test
-          yarn build
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Run Typescript Checks
+        run: yarn lint
+
+      - name: Run Tests
+        run: yarn test
+
+      - name: Build Project
+        if: github.ref == 'refs/heads/masters'
+        run: yarn build
