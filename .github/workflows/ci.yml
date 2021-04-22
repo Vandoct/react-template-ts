@@ -36,5 +36,5 @@ jobs:
         run: yarn test
 
       - name: Build Project
-        if: github.ref == 'refs/heads/masters'
+        if: github.ref == 'refs/heads/master'
         run: yarn build
