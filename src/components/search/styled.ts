@@ -10,7 +10,6 @@ const SearchWrapper = styled.div`
 
 const SearchStyled = styled(Input)`
   padding: 0.75rem;
-  margin-bottom: 0.5rem;
   border-radius: 2rem;
   background: ${theme.primary};
   border: 0;
@@ -37,6 +36,7 @@ const SearchSuggestion = styled.div`
   background: ${theme.primary};
   color: ${theme.textLight};
   border-radius: 0.5rem;
+  margin-top: 0.5rem;
 
   > div {
     padding: 0.5rem;

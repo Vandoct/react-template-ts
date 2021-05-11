@@ -158,7 +158,7 @@ const Home: FC = (): ReactElement => {
           currentSong={error || 'Current Song'}
         />
         <Player
-          spectrum
+          spectrum={playing}
           color={theme.text}
           isFavorite={favorite}
           isPlaying={playing}
