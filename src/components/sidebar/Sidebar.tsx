@@ -1,8 +1,15 @@
 import { FC, ReactElement } from 'react';
 import { SidebarStyled, SidebarWrapper } from './styled';
 
-const Sidebar: FC = ({ children }): ReactElement => (
-  <SidebarStyled>
+interface ISidebarProps {
+  isShow?: boolean;
+}
+
+const Sidebar: FC<ISidebarProps> = ({
+  isShow = true,
+  children,
+}): ReactElement => (
+  <SidebarStyled left={isShow ? '0rem' : '-19.375rem'}>
     <SidebarWrapper>{children}</SidebarWrapper>
   </SidebarStyled>
 );

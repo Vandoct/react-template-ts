@@ -15,7 +15,7 @@ const ControlWrapper = styled.div`
     padding: 0.5rem;
 
     &:hover {
-      background: ${theme.hover};
+      background: ${theme.hoverLight};
       cursor: pointer;
     }
   }

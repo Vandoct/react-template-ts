@@ -9,8 +9,14 @@ const Header = styled.div`
   align-items: center;
   margin-bottom: 4.5rem;
 
-  & :first-child {
-    margin-right: 1rem;
+  > {
+    & :first-child {
+      margin-right: 1rem;
+    }
+
+    img {
+      border-radius: 100%;
+    }
   }
 `;
 

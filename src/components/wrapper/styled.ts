@@ -1,13 +1,18 @@
 import { theme } from 'components/theme';
 import styled from 'styled-components';
 
-const ContentWrapper = styled.div`
+interface IContentWrapperProps {
+  isShow?: boolean;
+}
+
+const ContentWrapper = styled.div<IContentWrapperProps>`
   position: absolute;
   top: 0;
   right: 0;
-  left: 19.375rem;
+  left: ${(props) => (props.isShow ? '19.375rem' : '0rem')};
   min-height: 100%;
   background-color: ${theme.primaryDark};
+  transition: 0.3s;
 `;
 
 const ContentContainer = styled.div`

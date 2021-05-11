@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import styled from 'styled-components';
 
 interface ISpectrumWrapper {
@@ -89,6 +88,6 @@ const SpectrumWrapper = styled.div<ISpectrumWrapper>`
       transform: scaleY(1);
     }
   }
-` as FC<ISpectrumWrapper>;
+`;
 
 export default SpectrumWrapper;

@@ -7,5 +7,6 @@ export const theme = {
   text: '#728AA1',
   textLight: '#9FADBD',
   filterText: '#C9D7E3',
-  hover: '#52677a',
+  hover: '#1E3148',
+  hoverLight: '#52677A',
 };

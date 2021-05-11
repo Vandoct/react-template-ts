@@ -1,10 +1,11 @@
 import { FC, ReactElement } from 'react';
-import Radio, { IRadioProps } from './Radio';
+import { IRadio } from 'redux/radio/types';
+import Radio from './Radio';
 import { RadioContainer } from './styled';
 
 interface IListRadioProps {
-  radios: IRadioProps[];
-  onClick?: (url: string) => void;
+  radios: IRadio[];
+  onClick?: (data: IRadio) => void;
 }
 
 const ListRadio: FC<IListRadioProps> = ({ radios, onClick }): ReactElement => (

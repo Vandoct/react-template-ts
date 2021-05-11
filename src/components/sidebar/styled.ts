@@ -1,13 +1,18 @@
 import { theme } from 'components/theme';
 import styled from 'styled-components';
 
-const SidebarStyled = styled.div`
+export interface ISidebarStyledProps {
+  left: string;
+}
+
+const SidebarStyled = styled.div<ISidebarStyledProps>`
   position: fixed;
   top: 0;
-  left: 0;
+  left: ${(props) => props.left};
   width: 19.375rem;
   height: 100%;
   background: ${theme.primary};
+  transition: 0.3s;
 `;
 
 const SidebarWrapper = styled.div`

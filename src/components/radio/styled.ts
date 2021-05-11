@@ -31,6 +31,7 @@ const RadioWrapper = styled.div`
 
   &:hover {
     background: ${theme.primary};
+    cursor: pointer;
   }
 `;
 

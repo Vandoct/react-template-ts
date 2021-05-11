@@ -2,9 +2,15 @@ import { Input } from 'antd';
 import { theme } from 'components/theme';
 import styled from 'styled-components';
 
-const SearchBar = styled(Input)`
-  width: 25rem;
+const SearchWrapper = styled.div`
+  position: relative;
+  width: 35rem;
+  min-width: 0;
+`;
+
+const SearchStyled = styled(Input)`
   padding: 0.75rem;
+  margin-bottom: 0.5rem;
   border-radius: 2rem;
   background: ${theme.primary};
   border: 0;
@@ -24,4 +30,47 @@ const SearchBar = styled(Input)`
   }
 `;
 
-export default SearchBar;
+const SearchSuggestion = styled.div`
+  position: absolute;
+  width: 100%;
+  z-index: 999;
+  background: ${theme.primary};
+  color: ${theme.textLight};
+  border-radius: 0.5rem;
+
+  > div {
+    padding: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    user-select: none;
+
+    img {
+      height: 50px;
+      width: 50px;
+      margin-right: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    span {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    &:first-child {
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+
+    &:hover {
+      background: ${theme.hover};
+    }
+  }
+`;
+
+export { SearchWrapper, SearchStyled, SearchSuggestion };

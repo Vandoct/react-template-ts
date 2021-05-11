@@ -1,12 +1,12 @@
 import { FC, ReactElement } from 'react';
+import { IRadio } from 'redux/radio/types';
 import { RadioWrapper } from './styled';
 
-export interface IRadioProps {
-  id?: number;
+interface IRadioProps {
   image: string;
   title: string;
   url: string;
-  onClick?: (url: string) => void;
+  onClick?: (data: IRadio) => void;
 }
 
 const Radio: FC<IRadioProps> = ({
@@ -16,7 +16,15 @@ const Radio: FC<IRadioProps> = ({
   onClick,
 }): ReactElement => {
   const handleClick = () => {
-    if (onClick) onClick(url);
+    if (onClick) {
+      const data: IRadio = {
+        id: title,
+        image,
+        title,
+        url,
+      };
+      onClick(data);
+    }
   };
 
   return (
