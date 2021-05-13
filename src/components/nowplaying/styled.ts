@@ -8,8 +8,8 @@ const NowPlayingWrapper = styled.div`
     padding: 2rem;
 
     img {
-      width: 220;
-      height: 220;
+      width: 220px;
+      height: 220px;
       border-radius: 1rem;
     }
 

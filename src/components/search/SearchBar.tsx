@@ -18,7 +18,7 @@ const SearchBar: FC<InputProps & ISearchSuggestionProps> = ({
   ...rest
 }): ReactElement => {
   const handleClick = (radio: IRadio) => {
-    if (onSuggestionClick) onSuggestionClick({ ...radio, id: radio.title });
+    if (onSuggestionClick) onSuggestionClick(radio);
   };
 
   return (

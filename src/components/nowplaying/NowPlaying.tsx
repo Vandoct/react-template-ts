@@ -1,4 +1,5 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
+import { generateImagePlaceholder } from 'utils/generator';
 import NowPlayingWrapper from './styled';
 
 interface INowPlaying {
@@ -11,14 +12,26 @@ const NowPlaying: FC<INowPlaying> = ({
   image,
   title,
   currentSong,
-}): ReactElement => (
-  <NowPlayingWrapper>
-    <div>
-      <img src={image} alt="Radio Logo" />
-      <p>{title}</p>
-      <p>{currentSong}</p>
-    </div>
-  </NowPlayingWrapper>
-);
+}): ReactElement => {
+  const [source, setSource] = useState(image);
+
+  useEffect(() => {
+    setSource(image);
+  }, [image]);
+
+  const handleImageError = () => {
+    setSource(generateImagePlaceholder(220, 220));
+  };
+
+  return (
+    <NowPlayingWrapper>
+      <div>
+        <img src={source} alt="Radio Logo" onError={handleImageError} />
+        <p>{title}</p>
+        <p>{currentSong}</p>
+      </div>
+    </NowPlayingWrapper>
+  );
+};
 
 export default NowPlaying;

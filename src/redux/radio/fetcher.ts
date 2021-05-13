@@ -1,61 +1,63 @@
-import { Dispatch } from 'redux';
-import { ApplicationState, AppThunk } from 'redux/store';
-import { radios } from 'utils/dummy';
-import { slugify } from 'utils/helper';
+import { AppDispatch, ApplicationState, AppThunk } from 'redux/store';
+import api from 'utils/api';
+import { parseResponse } from 'utils/helper';
 import { radioBegin, radioDetail, radioError, radioSuccess } from './actions';
-import { ICategoryRadio, IRadio } from './types';
 
 export const getRadioList = (): AppThunk<Promise<string>> => (
-  dispatch: Dispatch
+  dispatch: AppDispatch
 ): Promise<string> => {
-  return new Promise<string>(() => {
+  return new Promise<string>((resolve, reject) => {
     dispatch(radioBegin());
 
-    setTimeout(() => {
-      try {
-        const data: ICategoryRadio[] = radios.map((item) => {
-          const radioList: IRadio[] = item.channels.map((radio) => {
-            return {
-              id: radio.id.toString(),
-              image: radio.image,
-              title: radio.title,
-              url: radio.url,
-            };
-          });
+    const sheetRange = 'Radio';
+    api
+      .get(`/${process.env.REACT_APP_SHEET_ID}/values/${sheetRange}`, {
+        params: {
+          key: process.env.REACT_APP_API_KEY,
+        },
+      })
+      .then((response) => {
+        const parsedResponse = parseResponse(response.data.values);
+        dispatch(radioSuccess(parsedResponse));
+        resolve('Success');
+      })
+      .catch((error) => {
+        console.log(error);
 
-          return {
-            category: item.category,
-            radios: radioList,
-          };
-        });
-        dispatch(radioSuccess(data));
-      } catch (e) {
-        dispatch(radioError(e));
-      }
-    }, 1500);
+        dispatch(radioError(error));
+        reject(error);
+      });
   });
 };
 
 export const getRadioDetail = (id: string): AppThunk<Promise<string>> => (
-  dispatch: Dispatch,
+  dispatch: AppDispatch,
   getState: () => ApplicationState
 ): Promise<string> => {
   return new Promise<string>(() => {
     dispatch(radioBegin());
 
-    setTimeout(() => {
-      try {
-        const radio =
-          getState()
-            .radio.radios.map((item) =>
-              item.radios.find((i) => id === slugify(i.title))
-            )
-            .filter((item) => item != null)[0] || null;
+    let radio = findRadioById(id, getState());
+
+    if (radio) {
+      dispatch(radioDetail(radio));
+      return;
+    }
+
+    dispatch(getRadioList())
+      .then(() => {
+        radio = findRadioById(id, getState());
 
         dispatch(radioDetail(radio));
-      } catch (e) {
-        dispatch(radioError(e));
-      }
-    }, 300);
+      })
+      .catch((error) => dispatch(radioError(error)));
   });
+};
+
+const findRadioById = (id: string, state: ApplicationState) => {
+  return (
+    state.radio.radios
+      .map((item) => item.radios.find((i) => id === i.id))
+      .filter((item) => item != null)[0] || null
+  );
 };

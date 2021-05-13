@@ -34,7 +34,7 @@ import {
 } from 'redux/radio/types';
 import { ApplicationState } from 'redux/store';
 import { generateImagePlaceholder } from 'utils/generator';
-import { isEmptyArray, slugify } from 'utils/helper';
+import { isEmptyArray } from 'utils/helper';
 
 interface HomeParams {
   slug: string;
@@ -66,24 +66,23 @@ const Home: FC = (): ReactElement => {
     if (!radio) {
       setShow(false);
       history.replace('/');
+      return;
     }
+
+    setSelected(radio);
   }, [radio]);
 
   useEffect(() => {
-    if (!radios.length) {
+    if (isEmptyArray(radios)) {
       dispatch(getRadioList());
     }
   }, [dispatch, radios]);
 
   useEffect(() => {
-    if (!selected && radios.length) {
+    if (!selected && slug && !isEmptyArray(radios)) {
       dispatch(getRadioDetail(slug));
     }
   }, [dispatch, radios, selected, slug]);
-
-  useEffect(() => {
-    setSelected(radio);
-  }, [radio]);
 
   useEffect(() => {
     if (!howl) return;
@@ -117,7 +116,7 @@ const Home: FC = (): ReactElement => {
 
     setPlaying(false);
     setSelected(data);
-    history.push(slugify(data.id));
+    history.push(data.id);
   };
 
   const handleFavoriteToggle = () => {

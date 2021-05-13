@@ -11,13 +11,7 @@ interface IListRadioProps {
 const ListRadio: FC<IListRadioProps> = ({ radios, onClick }): ReactElement => (
   <RadioContainer>
     {radios.map((radio) => (
-      <Radio
-        key={radio.id}
-        image={radio.image}
-        title={radio.title}
-        url={radio.url}
-        onClick={onClick}
-      />
+      <Radio key={radio.id} radio={radio} onClick={onClick} />
     ))}
   </RadioContainer>
 );

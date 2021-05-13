@@ -5,7 +5,7 @@ import {
   compose,
   createStore,
 } from 'redux';
-import thunk, { ThunkAction } from 'redux-thunk';
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import radioReducer from './radio/reducer';
 import { IReduxRadioState } from './radio/types';
 
@@ -25,6 +25,8 @@ export type AppThunk<R = void> = ThunkAction<
   null,
   AnyAction
 >;
+
+export type AppDispatch = ThunkDispatch<ApplicationState, null, AnyAction>;
 
 const rootReducer = combineReducers({
   radio: radioReducer,
