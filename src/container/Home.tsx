@@ -7,6 +7,7 @@ import ListRadio from 'components/radio/ListRadio';
 import SearchBar from 'components/search/SearchBar';
 import Sidebar from 'components/sidebar/Sidebar';
 import { theme } from 'components/theme';
+import { showNotification } from 'components/utils/notification';
 import {
   CategoryWrapper,
   Content,
@@ -25,14 +26,14 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { getRadioDetail, getRadioList } from 'redux/radio/fetcher';
+import { getRadioDetail, getRadioList, reportRadio } from 'redux/radio/fetcher';
 import {
   ICategoryRadio,
   IRadio,
   IReduxRadioState,
   TRadioNullable,
 } from 'redux/radio/types';
-import { ApplicationState } from 'redux/store';
+import { AppDispatch, ApplicationState } from 'redux/store';
 import { generateImagePlaceholder } from 'utils/generator';
 import { isEmptyArray } from 'utils/helper';
 
@@ -54,7 +55,7 @@ const Home: FC = (): ReactElement => {
   );
   const howl = useHowl(selected?.url);
   const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useLayoutEffect(() => {
     if (slug) {
@@ -114,6 +115,7 @@ const Home: FC = (): ReactElement => {
       setSuggestions([]);
     }
 
+    setQuery('');
     setPlaying(false);
     setSelected(data);
     history.push(data.id);
@@ -127,9 +129,34 @@ const Home: FC = (): ReactElement => {
     setPlaying((prevState) => !prevState);
   };
 
+  const handleReportRadio = () => {
+    if (!selected) return;
+    dispatch(reportRadio(selected.id))
+      .then(() => {
+        showNotification({
+          type: 'success',
+          title: 'Error reported',
+          message: 'Thank you for reporting.',
+        });
+      })
+      .catch(() => {
+        showNotification({
+          type: 'error',
+          title: 'Failed to report',
+          message:
+            'An error occurred when reporting radio, please try again later.',
+        });
+      });
+  };
+
   const handleRadioError = () => {
     setPlaying(false);
-    setError('Error occurred while playing the radio!');
+    showNotification({
+      type: 'error',
+      title: 'Failed to play radio',
+      message:
+        'An error occurred while playing the radio, please try again later or try to report it.',
+    });
   };
 
   const handleSearchRadio = () => {
@@ -163,6 +190,7 @@ const Home: FC = (): ReactElement => {
           isPlaying={playing}
           onFavorite={handleFavoriteToggle}
           onPlay={handlePlayToggle}
+          onReport={handleReportRadio}
         />
       </Sidebar>
       <ContentWrapper isShow={show}>
@@ -172,6 +200,7 @@ const Home: FC = (): ReactElement => {
               size="large"
               placeholder="Search for radio channel"
               prefix={<img src={SearchIcon} alt="" />}
+              value={query}
               onChange={handleQueryChange}
               suggestions={suggestions}
               onSuggestionClick={handleRadioClick}

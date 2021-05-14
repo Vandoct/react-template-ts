@@ -99,3 +99,7 @@ export const parseResponse = (data: string[][]): ICategoryRadio[] => {
 
   return arr as ICategoryRadio[];
 };
+
+export const getTimestamp = (): string => {
+  return new Date().toLocaleString('id-ID').replace(/\./g, ':');
+};

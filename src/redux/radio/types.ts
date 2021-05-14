@@ -5,6 +5,7 @@ export enum ERadioActionTypes {
   RADIO_SUCCESS = 'RADIO_SUCCESS',
   RADIO_DETAIL = 'RADIO_DETAIL',
   RADIO_ERROR = 'RADIO_ERROR',
+  RADIO_FINISH = 'RADIO_FINISH',
 }
 
 export interface IRadio {
@@ -38,6 +39,10 @@ export interface IRadioErrorAction {
   error: string;
 }
 
+export interface IRadioFinishAction {
+  type: ERadioActionTypes.RADIO_FINISH;
+}
+
 export interface IReduxRadioState extends IReduxBaseState {
   radio: TRadioNullable;
   radios: ICategoryRadio[];
@@ -49,4 +54,5 @@ export type TRadioReducerActions =
   | IRadioBeginAction
   | IRadioSuccessAction
   | IRadioDetailAction
-  | IRadioErrorAction;
+  | IRadioErrorAction
+  | IRadioFinishAction;

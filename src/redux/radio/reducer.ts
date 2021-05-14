@@ -43,6 +43,12 @@ const reducer = (
         error: action.error,
       };
     }
+    case ERadioActionTypes.RADIO_FINISH: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
     default:
       return state;
   }

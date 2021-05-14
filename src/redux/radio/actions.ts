@@ -4,6 +4,7 @@ import {
   IRadioBeginAction,
   IRadioDetailAction,
   IRadioErrorAction,
+  IRadioFinishAction,
   IRadioSuccessAction,
   TRadioNullable,
 } from './types';
@@ -32,5 +33,11 @@ export const radioError = (error: string): IRadioErrorAction => {
   return {
     type: ERadioActionTypes.RADIO_ERROR,
     error,
+  };
+};
+
+export const radioFinish = (): IRadioFinishAction => {
+  return {
+    type: ERadioActionTypes.RADIO_FINISH,
   };
 };

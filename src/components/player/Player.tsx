@@ -14,7 +14,7 @@ const Player: FC<IPlayerProps> = ({
   isPlaying,
   onFavorite,
   onPlay,
-  onMore,
+  onReport,
 }): ReactElement => (
   <PlayerWrapper>
     <div>
@@ -24,7 +24,7 @@ const Player: FC<IPlayerProps> = ({
         isPlaying={isPlaying}
         onFavorite={onFavorite}
         onPlay={onPlay}
-        onMore={onMore}
+        onReport={onReport}
       />
     </div>
   </PlayerWrapper>

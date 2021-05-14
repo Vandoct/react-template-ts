@@ -1,7 +1,13 @@
 import { AppDispatch, ApplicationState, AppThunk } from 'redux/store';
 import api from 'utils/api';
-import { parseResponse } from 'utils/helper';
-import { radioBegin, radioDetail, radioError, radioSuccess } from './actions';
+import { getTimestamp, parseResponse } from 'utils/helper';
+import {
+  radioBegin,
+  radioDetail,
+  radioError,
+  radioFinish,
+  radioSuccess,
+} from './actions';
 
 export const getRadioList = (): AppThunk<Promise<string>> => (
   dispatch: AppDispatch
@@ -22,8 +28,6 @@ export const getRadioList = (): AppThunk<Promise<string>> => (
         resolve('Success');
       })
       .catch((error) => {
-        console.log(error);
-
         dispatch(radioError(error));
         reject(error);
       });
@@ -60,4 +64,43 @@ const findRadioById = (id: string, state: ApplicationState) => {
       .map((item) => item.radios.find((i) => id === i.id))
       .filter((item) => item != null)[0] || null
   );
+};
+
+export const reportRadio = (id: string): AppThunk<Promise<string>> => (
+  dispatch: AppDispatch
+): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    dispatch(radioBegin());
+
+    const sheetRange = 'Report!A1:append';
+    api
+      .post(
+        `/${process.env.REACT_APP_SHEET_ID}/values/${sheetRange}`,
+        {
+          majorDimension: 'ROWS',
+          values: [['=UUID()', 'user_id', id, getTimestamp()]],
+        },
+        {
+          params: {
+            insertDataOption: 'INSERT_ROWS',
+            valueInputOption: 'USER_ENTERED',
+          },
+        }
+      )
+      .then((response) => {
+        const isSuccess = response.data.updates.updatedRows > 0;
+
+        if (!isSuccess) {
+          dispatch(radioError('Failed'));
+          reject('Failed');
+        }
+
+        dispatch(radioFinish());
+        resolve('Success');
+      })
+      .catch((error) => {
+        dispatch(radioError(error));
+        reject(error);
+      });
+  });
 };
