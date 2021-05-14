@@ -3,8 +3,6 @@ import { theme } from 'components/theme';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import { Slide, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import store from 'redux/store';
 import { createGlobalStyle } from 'styled-components';
 import App from './App';
@@ -73,7 +71,6 @@ ReactDOM.render(
     <BrowserRouter>
       <GlobalStyle />
       <App />
-      <ToastContainer transition={Slide} limit={1} />
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

@@ -46,7 +46,6 @@ const Home: FC = (): ReactElement => {
   const [playing, setPlaying] = useState(false);
   const [show, setShow] = useState(false);
   const [query, setQuery] = useState('');
-  const [error, setError] = useState('');
   const [selected, setSelected] = useState<TRadioNullable>(null);
   const [suggestions, setSuggestions] = useState<IRadio[]>([]);
   const { slug } = useParams<HomeParams>();
@@ -181,7 +180,7 @@ const Home: FC = (): ReactElement => {
         <NowPlaying
           image={selected?.image || ''}
           title={selected?.title || ''}
-          currentSong={error || 'Current Song'}
+          currentSong="Current Song"
         />
         <Player
           spectrum={playing}

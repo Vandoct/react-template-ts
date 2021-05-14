@@ -62,7 +62,8 @@
     "@typescript-eslint/no-use-before-define": [
       "error",
       { "functions": false, "variables": false }
-    ]
+    ],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
   },
   "settings": {
     "import/resolver": {
