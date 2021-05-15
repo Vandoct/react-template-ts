@@ -8,6 +8,7 @@ import {
   radioFinish,
   radioSuccess,
 } from './actions';
+import { ICategoryRadio, IRadio } from './types';
 
 export const getRadioList = (): AppThunk<Promise<string>> => async (
   dispatch: AppDispatch
@@ -40,7 +41,8 @@ export const getRadioDetail = (id: string): AppThunk<Promise<string>> => async (
   dispatch(radioBegin());
 
   try {
-    let radio = findRadioById(id, getState());
+    const categoryRadios = getState().radio.radios;
+    let radio = findRadioById(id, categoryRadios);
 
     if (radio) {
       dispatch(radioDetail(radio));
@@ -48,7 +50,7 @@ export const getRadioDetail = (id: string): AppThunk<Promise<string>> => async (
     }
 
     await dispatch(getRadioList());
-    radio = findRadioById(id, getState());
+    radio = findRadioById(id, categoryRadios);
     dispatch(radioDetail(radio));
     return 'Success';
   } catch (error) {
@@ -57,9 +59,12 @@ export const getRadioDetail = (id: string): AppThunk<Promise<string>> => async (
   }
 };
 
-const findRadioById = (id: string, state: ApplicationState) => {
+export const findRadioById = (
+  id: string,
+  radios: ICategoryRadio[]
+): IRadio | null => {
   return (
-    state.radio.radios
+    radios
       .map((item) => item.radios.find((i) => id === i.id))
       .filter((item) => item != null)[0] || null
   );
