@@ -9,53 +9,52 @@ import {
   radioSuccess,
 } from './actions';
 
-export const getRadioList = (): AppThunk<Promise<string>> => (
+export const getRadioList = (): AppThunk<Promise<string>> => async (
   dispatch: AppDispatch
 ): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    dispatch(radioBegin());
+  dispatch(radioBegin());
 
+  try {
     const sheetRange = 'Radio';
-    api
-      .get(`/${process.env.REACT_APP_SHEET_ID}/values/${sheetRange}`, {
-        params: {
-          key: process.env.REACT_APP_API_KEY,
-        },
-      })
-      .then((response) => {
-        const parsedResponse = parseResponse(response.data.values);
-        dispatch(radioSuccess(parsedResponse));
-        resolve('Success');
-      })
-      .catch((error) => {
-        dispatch(radioError(error));
-        reject(error);
-      });
-  });
+    const path = `/${process.env.REACT_APP_SHEET_ID}/values/${sheetRange}`;
+
+    const params = {
+      key: process.env.REACT_APP_API_KEY,
+    };
+
+    const response = await api.get(path, { params });
+    const parsedResponse = parseResponse(response.data.values);
+
+    dispatch(radioSuccess(parsedResponse));
+    return 'Success';
+  } catch (error) {
+    dispatch(radioError(error));
+    return error;
+  }
 };
 
-export const getRadioDetail = (id: string): AppThunk<Promise<string>> => (
+export const getRadioDetail = (id: string): AppThunk<Promise<string>> => async (
   dispatch: AppDispatch,
   getState: () => ApplicationState
 ): Promise<string> => {
-  return new Promise<string>(() => {
-    dispatch(radioBegin());
+  dispatch(radioBegin());
 
+  try {
     let radio = findRadioById(id, getState());
 
     if (radio) {
       dispatch(radioDetail(radio));
-      return;
+      return 'Success';
     }
 
-    dispatch(getRadioList())
-      .then(() => {
-        radio = findRadioById(id, getState());
-
-        dispatch(radioDetail(radio));
-      })
-      .catch((error) => dispatch(radioError(error)));
-  });
+    await dispatch(getRadioList());
+    radio = findRadioById(id, getState());
+    dispatch(radioDetail(radio));
+    return 'Success';
+  } catch (error) {
+    dispatch(radioError(error));
+    return error;
+  }
 };
 
 const findRadioById = (id: string, state: ApplicationState) => {
@@ -66,41 +65,37 @@ const findRadioById = (id: string, state: ApplicationState) => {
   );
 };
 
-export const reportRadio = (id: string): AppThunk<Promise<string>> => (
+export const reportRadio = (id: string): AppThunk<Promise<string>> => async (
   dispatch: AppDispatch
 ): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    dispatch(radioBegin());
+  dispatch(radioBegin());
 
+  try {
     const sheetRange = 'Report!A1:append';
-    api
-      .post(
-        `/${process.env.REACT_APP_SHEET_ID}/values/${sheetRange}`,
-        {
-          majorDimension: 'ROWS',
-          values: [['=UUID()', 'user_id', id, getTimestamp()]],
-        },
-        {
-          params: {
-            insertDataOption: 'INSERT_ROWS',
-            valueInputOption: 'USER_ENTERED',
-          },
-        }
-      )
-      .then((response) => {
-        const isSuccess = response.data.updates.updatedRows > 0;
+    const path = `/${process.env.REACT_APP_SHEET_ID}/values/${sheetRange}`;
 
-        if (!isSuccess) {
-          dispatch(radioError('Failed'));
-          reject('Failed');
-        }
+    const body = {
+      majorDimension: 'ROWS',
+      values: [['=UUID()', 'user_id', id, getTimestamp()]],
+    };
 
-        dispatch(radioFinish());
-        resolve('Success');
-      })
-      .catch((error) => {
-        dispatch(radioError(error));
-        reject(error);
-      });
-  });
+    const params = {
+      insertDataOption: 'INSERT_ROWS',
+      valueInputOption: 'USER_ENTERED',
+    };
+
+    const response = await api.post(path, body, { params });
+    const isSuccess = response.data.updates.updatedRows > 0;
+
+    if (!isSuccess) {
+      dispatch(radioError('Failed'));
+      return response.statusText;
+    }
+
+    dispatch(radioFinish());
+    return 'Success';
+  } catch (error) {
+    dispatch(radioError(error));
+    return error;
+  }
 };
