@@ -23,6 +23,7 @@ import { useUpdateEffect } from 'hooks/useUpdateEffects';
 import React, {
   FC,
   ReactElement,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useState,
@@ -245,6 +246,16 @@ const Home: FC = (): ReactElement => {
   };
 
   useDebouncedEffect(handleSearchRadio, 500, query);
+
+  const reloadPage = useCallback(() => {
+    history.go(0);
+  }, [history]);
+
+  useEffect(() => {
+    window.addEventListener('storage', reloadPage);
+
+    return () => window.removeEventListener('storage', reloadPage);
+  }, [reloadPage]);
 
   if (!selected && !radios.length) {
     return <Loading />;

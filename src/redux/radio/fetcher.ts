@@ -84,6 +84,8 @@ export const reportRadio = (id: string): AppThunk<Promise<string>> => async (
 
     const userId = localStorageService.getUser()?.id;
 
+    if (!userId) throw Error('Not logged in!');
+
     const body = {
       majorDimension: 'ROWS',
       values: [['=UUID()', userId, id, getTimestamp()]],
