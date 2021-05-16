@@ -2,7 +2,7 @@ import { findRadioById } from 'redux/radio/fetcher';
 import { IRadio } from 'redux/radio/types';
 import { AppDispatch, ApplicationState, AppThunk } from 'redux/store';
 import { IValueResponse } from 'redux/types';
-import api from 'utils/api';
+import api, { refreshToken } from 'utils/api';
 import { sha256 } from 'utils/crypto';
 import { isEmptyArray } from 'utils/helper';
 import LocalStorageService from 'utils/localStorageService';
@@ -88,6 +88,9 @@ export const login = (
 
     localStorageService.setUser(data);
 
+    // Get access token
+    refreshToken();
+
     dispatch(commonSuccess(data));
     return 'Success';
   } catch (error) {
@@ -96,8 +99,13 @@ export const login = (
   }
 };
 
-export const clearError = (): AppThunk<void> => (
-  dispatch: AppDispatch
-): void => {
+export const checkAuthState = (): AppThunk => (dispatch: AppDispatch) => {
+  const user = localStorageService.getUser();
+  if (user) {
+    dispatch(commonSuccess(user));
+  }
+};
+
+export const clearError = (): AppThunk => (dispatch: AppDispatch) => {
   dispatch(commonError(''));
 };

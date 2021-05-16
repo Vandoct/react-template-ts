@@ -6,6 +6,35 @@ import LocalStorageService from './localStorageService';
 const api = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 const localStorageService = LocalStorageService.getInstance();
 
+export const refreshToken = async (): Promise<string> => {
+  try {
+    const response = await api.request({
+      url: process.env.REACT_APP_AUTH_URL,
+      method: 'POST',
+      data: {
+        client_id: process.env.REACT_APP_CLIENT_ID,
+        client_secret: process.env.REACT_APP_CLIENT_SECRET,
+        grant_type: REFRESH_TOKEN,
+        refresh_token: process.env.REACT_APP_REFRESH_TOKEN,
+      },
+    });
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { access_token, expires_in } = response.data;
+
+    api.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+    localStorageService.setToken(access_token, expires_in);
+
+    setTimeout(() => {
+      refreshToken();
+    }, (expires_in - 100) * 1000);
+
+    return 'Success';
+  } catch (error) {
+    return error;
+  }
+};
+
 // Add a request interceptor
 api.interceptors.request.use(
   (c) => {
@@ -42,23 +71,9 @@ api.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const res = await api.request({
-        url: process.env.REACT_APP_AUTH_URL,
-        method: 'POST',
-        data: {
-          client_id: process.env.REACT_APP_CLIENT_ID,
-          client_secret: process.env.REACT_APP_CLIENT_SECRET,
-          grant_type: REFRESH_TOKEN,
-          refresh_token: process.env.REACT_APP_REFRESH_TOKEN,
-        },
-      });
-
-      if (res.status === 200) {
-        const { data } = res;
-        localStorageService.setToken(data.access_token, data.expires_in);
-        api.defaults.headers.common.Authorization = `Bearer ${localStorageService.getAccessToken()}`;
-        return api(originalRequest);
-      }
+      refreshToken()
+        .then(() => api(originalRequest))
+        .catch((err) => console.error(err));
     }
     return Promise.reject(error);
   }
