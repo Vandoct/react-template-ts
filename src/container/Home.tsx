@@ -165,6 +165,16 @@ const Home: FC = (): ReactElement => {
 
   const handleReportRadio = () => {
     if (!selected) return;
+
+    if (!user) {
+      showNotification({
+        type: 'error',
+        title: 'Failed to report',
+        message: 'Please sign in to use report feature',
+      });
+      return;
+    }
+
     dispatch(reportRadio(selected.id))
       .then(() => {
         showNotification({

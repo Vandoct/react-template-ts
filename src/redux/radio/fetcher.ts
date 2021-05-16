@@ -1,6 +1,7 @@
 import { AppDispatch, ApplicationState, AppThunk } from 'redux/store';
 import api from 'utils/api';
 import { getTimestamp, parseResponse } from 'utils/helper';
+import LocalStorageService from 'utils/localStorageService';
 import {
   radioBegin,
   radioDetail,
@@ -9,6 +10,8 @@ import {
   radioSuccess,
 } from './actions';
 import { ICategoryRadio, IRadio } from './types';
+
+const localStorageService = LocalStorageService.getInstance();
 
 export const getRadioList = (): AppThunk<Promise<string>> => async (
   dispatch: AppDispatch
@@ -79,9 +82,11 @@ export const reportRadio = (id: string): AppThunk<Promise<string>> => async (
     const sheetRange = 'Report!A1:append';
     const path = `/${process.env.REACT_APP_SHEET_ID}/values/${sheetRange}`;
 
+    const userId = localStorageService.getUser()?.id;
+
     const body = {
       majorDimension: 'ROWS',
-      values: [['=UUID()', 'user_id', id, getTimestamp()]],
+      values: [['=UUID()', userId, id, getTimestamp()]],
     };
 
     const params = {
@@ -101,6 +106,6 @@ export const reportRadio = (id: string): AppThunk<Promise<string>> => async (
     return 'Success';
   } catch (error) {
     dispatch(radioError(error));
-    return error;
+    throw Error(error);
   }
 };
