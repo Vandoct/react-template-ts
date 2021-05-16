@@ -6,6 +6,8 @@ import {
   createStore,
 } from 'redux';
 import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import commonReducer from './common/reducer';
+import { IReduxCommonState } from './common/types';
 import radioReducer from './radio/reducer';
 import { IReduxRadioState } from './radio/types';
 
@@ -16,6 +18,7 @@ declare global {
 }
 
 export interface ApplicationState {
+  common: IReduxCommonState;
   radio: IReduxRadioState;
 }
 
@@ -29,6 +32,7 @@ export type AppThunk<R = void> = ThunkAction<
 export type AppDispatch = ThunkDispatch<ApplicationState, null, AnyAction>;
 
 const rootReducer = combineReducers({
+  common: commonReducer,
   radio: radioReducer,
 });
 

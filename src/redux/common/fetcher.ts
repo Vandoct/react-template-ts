@@ -5,6 +5,7 @@ import { IValueResponse } from 'redux/types';
 import api from 'utils/api';
 import { sha256 } from 'utils/crypto';
 import { isEmptyArray } from 'utils/helper';
+import LocalStorageService from 'utils/localStorageService';
 import { commonBegin, commonError, commonSuccess } from './actions';
 import { IUser } from './types';
 
@@ -12,6 +13,8 @@ interface ILogin {
   email: string;
   pass: string;
 }
+
+const localStorageService = LocalStorageService.getInstance();
 
 export const login = (
   email: string,
@@ -47,8 +50,8 @@ export const login = (
     // Check if password is correct
     const passwordHashed = await sha256(pass);
     if (user[0].pass !== passwordHashed) {
-      dispatch(commonError('Wrong Credentials'));
-      return 'Wrong Credentials';
+      dispatch(commonError('User not found'));
+      return 'User not found';
     }
 
     // Find user row data
@@ -83,10 +86,18 @@ export const login = (
       favorites: favoriteRadios,
     };
 
+    localStorageService.setUser(data);
+
     dispatch(commonSuccess(data));
     return 'Success';
   } catch (error) {
     dispatch(commonError(error));
     return error;
   }
+};
+
+export const clearError = (): AppThunk<void> => (
+  dispatch: AppDispatch
+): void => {
+  dispatch(commonError(''));
 };

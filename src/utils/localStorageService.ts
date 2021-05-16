@@ -1,4 +1,5 @@
-import { ACCESS_TOKEN, EXPIRE_TOKEN } from 'constants/key';
+import { ACCESS_TOKEN, EXPIRE_TOKEN, USER } from 'constants/key';
+import { IUser } from 'redux/common/types';
 
 class LocalStorageService {
   private static instance: LocalStorageService;
@@ -9,6 +10,18 @@ class LocalStorageService {
     }
     return LocalStorageService.instance;
   }
+
+  setUser = (user: IUser): void => {
+    const userStringified = JSON.stringify(user);
+    localStorage.setItem(USER, userStringified);
+  };
+
+  getUser = (): IUser | null => {
+    const item = localStorage.getItem(USER);
+    if (!item) return null;
+
+    return JSON.parse(item) as IUser;
+  };
 
   setToken = (accessToken: string, expireToken: string): void => {
     localStorage.setItem(ACCESS_TOKEN, accessToken);

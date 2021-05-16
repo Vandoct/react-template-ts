@@ -81,6 +81,18 @@ const LoginWrapper = styled.div`
       margin-bottom: 0.5em;
     }
   }
+
+  .ant-form {
+    p {
+      color: ${theme.text};
+
+      &:hover {
+        color: ${theme.textLight};
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
 `;
 
 export {

@@ -29,6 +29,8 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, useHistory, useParams } from 'react-router-dom';
+import { clearError } from 'redux/common/fetcher';
+import { IReduxCommonState } from 'redux/common/types';
 import { getRadioDetail, getRadioList, reportRadio } from 'redux/radio/fetcher';
 import {
   ICategoryRadio,
@@ -44,6 +46,13 @@ interface HomeParams {
   slug: string;
 }
 
+interface Location {
+  pathname: string;
+  search: string;
+  hash: string;
+  state: Record<string, unknown>;
+}
+
 const Home: FC = (): ReactElement => {
   const [favorite, setFavorite] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -55,6 +64,9 @@ const Home: FC = (): ReactElement => {
   const { slug } = useParams<HomeParams>();
   const { radio, radios } = useSelector<ApplicationState, IReduxRadioState>(
     (state) => state.radio
+  );
+  const { user, error } = useSelector<ApplicationState, IReduxCommonState>(
+    (state) => state.common
   );
   const howl = useHowl(selected?.url);
   const history = useHistory();
@@ -76,11 +88,23 @@ const Home: FC = (): ReactElement => {
     setSelected(radio);
   }, [radio]);
 
+  useUpdateEffect(() => {
+    if (user) hideModal();
+  }, [user]);
+
+  useUpdateEffect(() => {
+    if (error) {
+      showNotification({
+        type: 'error',
+        title: 'Failed to sign in',
+        message: error,
+      });
+      dispatch(clearError());
+    }
+  }, [error]);
+
   useEffect(() => {
     if (isEmptyArray(radios)) {
-      // dispatch(login('a@a.a', 'a'))
-      //   .then((v) => console.log(v))
-      //   .catch((e) => console.log(e));
       dispatch(getRadioList());
     }
   }, [dispatch, radios]);
@@ -179,24 +203,26 @@ const Home: FC = (): ReactElement => {
     setIsModalVisible(true);
   };
 
-  const handleCancel = () => {
+  const hideModal = () => {
     setIsModalVisible(false);
 
-    if (history.length > 2) {
-      history.goBack();
-      return;
-    }
+    const state = history.location.state as Location;
+    const path = state?.pathname || HOME;
 
-    history.replace(HOME);
+    history.replace(path);
   };
 
   const handleLoginClick = () => {
-    history.push(LOGIN);
+    history.push(LOGIN, {
+      ...history.location,
+    });
     showModal();
   };
 
   const handleRegisterClick = () => {
-    history.push(REGISTER);
+    history.push(REGISTER, {
+      ...history.location,
+    });
     showModal();
   };
 
@@ -216,10 +242,7 @@ const Home: FC = (): ReactElement => {
         <Route
           path={LOGIN}
           render={() => (
-            <Modal
-              footer={null}
-              visible={isModalVisible}
-              onCancel={handleCancel}>
+            <Modal footer={null} visible={isModalVisible} onCancel={hideModal}>
               <Login />
             </Modal>
           )}
@@ -255,8 +278,8 @@ const Home: FC = (): ReactElement => {
               onSuggestionClick={handleRadioClick}
             />
             <Account
-              name={playing ? 'john wick' : null}
-              isLoggedIn={playing}
+              name={user ? user.name : null}
+              isLoggedIn={!!user}
               onLogin={handleLoginClick}
               onRegister={handleRegisterClick}
               onLogout={handleLogoutClick}

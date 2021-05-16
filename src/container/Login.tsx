@@ -1,11 +1,20 @@
 import { Button, Form, Input } from 'antd';
 import { LoginWrapper } from 'components/wrapper/styled';
 import { FC, ReactElement } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from 'redux/common/fetcher';
+import { IReduxCommonState } from 'redux/common/types';
+import { AppDispatch, ApplicationState } from 'redux/store';
 import { getEmailRegex } from 'utils/regex';
 
 const Login: FC = (): ReactElement => {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  const { loading } = useSelector<ApplicationState, IReduxCommonState>(
+    (state) => state.common
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
+  const onFinish = ({ email, password }: Record<string, string>) => {
+    dispatch(login(email, password));
   };
 
   return (
@@ -32,8 +41,15 @@ const Login: FC = (): ReactElement => {
           <Input.Password placeholder="Password" />
         </Form.Item>
 
+        <p>Forgot password?</p>
+
         <Form.Item>
-          <Button type="primary" size="large" htmlType="submit" block>
+          <Button
+            type="primary"
+            size="large"
+            htmlType="submit"
+            loading={loading}
+            block>
             Sign in
           </Button>
         </Form.Item>
