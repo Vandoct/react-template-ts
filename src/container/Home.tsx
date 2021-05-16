@@ -1,4 +1,6 @@
+import Modal from 'antd/lib/modal/Modal';
 import SearchIcon from 'assets/icon/search.svg';
+import Account from 'components/account/Account';
 import Header from 'components/header/styled';
 import Loading from 'components/loading/Loading';
 import NowPlaying from 'components/nowplaying/NowPlaying';
@@ -14,6 +16,7 @@ import {
   ContentContainer,
   ContentWrapper,
 } from 'components/wrapper/styled';
+import { HOME, LOGIN, REGISTER } from 'constants/webRoute';
 import { useDebouncedEffect } from 'hooks/useDebouncedEffect';
 import { useHowl } from 'hooks/useHowl';
 import { useUpdateEffect } from 'hooks/useUpdateEffects';
@@ -25,7 +28,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { Route, useHistory, useParams } from 'react-router-dom';
 import { getRadioDetail, getRadioList, reportRadio } from 'redux/radio/fetcher';
 import {
   ICategoryRadio,
@@ -34,8 +37,8 @@ import {
   TRadioNullable,
 } from 'redux/radio/types';
 import { AppDispatch, ApplicationState } from 'redux/store';
-import { generateImagePlaceholder } from 'utils/generator';
 import { isEmptyArray } from 'utils/helper';
+import Login from './Login';
 
 interface HomeParams {
   slug: string;
@@ -48,6 +51,7 @@ const Home: FC = (): ReactElement => {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<TRadioNullable>(null);
   const [suggestions, setSuggestions] = useState<IRadio[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(true);
   const { slug } = useParams<HomeParams>();
   const { radio, radios } = useSelector<ApplicationState, IReduxRadioState>(
     (state) => state.radio
@@ -74,6 +78,9 @@ const Home: FC = (): ReactElement => {
 
   useEffect(() => {
     if (isEmptyArray(radios)) {
+      // dispatch(login('a@a.a', 'a'))
+      //   .then((v) => console.log(v))
+      //   .catch((e) => console.log(e));
       dispatch(getRadioList());
     }
   }, [dispatch, radios]);
@@ -168,6 +175,35 @@ const Home: FC = (): ReactElement => {
     setSuggestions(filteredRadios);
   };
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+
+    if (history.length > 2) {
+      history.goBack();
+      return;
+    }
+
+    history.replace(HOME);
+  };
+
+  const handleLoginClick = () => {
+    history.push(LOGIN);
+    showModal();
+  };
+
+  const handleRegisterClick = () => {
+    history.push(REGISTER);
+    showModal();
+  };
+
+  const handleLogoutClick = () => {
+    console.log('logout');
+  };
+
   useDebouncedEffect(handleSearchRadio, 500, query);
 
   if (!selected && !radios.length) {
@@ -176,6 +212,20 @@ const Home: FC = (): ReactElement => {
 
   return (
     <>
+      {history.location.pathname === LOGIN && (
+        <Route
+          path={LOGIN}
+          render={() => (
+            <Modal
+              footer={null}
+              visible={isModalVisible}
+              onCancel={handleCancel}>
+              <Login />
+            </Modal>
+          )}
+        />
+      )}
+
       <Sidebar isShow={show}>
         <NowPlaying
           image={selected?.image || ''}
@@ -204,7 +254,13 @@ const Home: FC = (): ReactElement => {
               suggestions={suggestions}
               onSuggestionClick={handleRadioClick}
             />
-            <img src={generateImagePlaceholder(60, 60)} alt="profile" />
+            <Account
+              name={playing ? 'john wick' : null}
+              isLoggedIn={playing}
+              onLogin={handleLoginClick}
+              onRegister={handleRegisterClick}
+              onLogout={handleLogoutClick}
+            />
           </Header>
           <Content>
             {radios.map((item, index) => (

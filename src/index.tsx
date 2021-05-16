@@ -11,6 +11,14 @@ import reportWebVitals from './reportWebVitals';
 
 const GlobalStyle = createGlobalStyle`
   body {
+		.ant-popover-title {
+			padding: 0.5rem;
+			color: ${theme.navTextLight};
+			font-weight: 700;
+			font-size: 1rem;
+			border-bottom: 1px solid ${theme.text};
+		}
+
 		.ant-popover-inner {
 			border-radius: 0.5rem;
 			background: ${theme.hover};
@@ -26,12 +34,21 @@ const GlobalStyle = createGlobalStyle`
 					border-radius: 0.5rem;
 					color: ${theme.navTextLight};
 					font-weight: 500;
+					cursor: pointer;
+					user-select: none;
 					
 					&:hover {
 						background: ${theme.hoverLight};
 					}
 				}
 			}
+		}
+
+		.ant-popover-placement-bottomRight > .ant-popover-content > .ant-popover-arrow {
+			border-top-color: ${theme.hover};
+			border-right-color: transparent;
+			border-bottom-color: transparent;
+			border-left-color: ${theme.hover};
 		}
 
 		.ant-popover-placement-top > .ant-popover-content > .ant-popover-arrow {
@@ -57,6 +74,23 @@ const GlobalStyle = createGlobalStyle`
 		}
 
 		.ant-notification-close-icon {
+			color: ${theme.text};
+
+			&:hover {
+				color: ${theme.textLight}
+			}
+		}
+		
+		.ant-modal-body {
+			padding: 4rem 2rem 2rem 2rem;
+		}
+
+		.ant-modal-content {
+			background: ${theme.primary};
+			border-radius: 0.5rem;
+		}
+
+		.ant-modal-close {
 			color: ${theme.text};
 
 			&:hover {

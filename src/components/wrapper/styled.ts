@@ -29,4 +29,64 @@ const CategoryWrapper = styled.div`
   }
 `;
 
-export { ContentWrapper, ContentContainer, Content, CategoryWrapper };
+const LoginWrapper = styled.div`
+  h1 {
+    text-align: center;
+    font-weight: 700;
+    color: ${theme.textLight};
+    margin: 0;
+  }
+
+  p:first-of-type {
+    text-align: center;
+    color: ${theme.text};
+  }
+
+  p:nth-of-type(2) {
+    margin: 0;
+    text-align: center;
+    color: ${theme.text};
+
+    span {
+      color: ${theme.textLight};
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+
+  input {
+    color: ${theme.primary};
+    border-radius: 0.3rem;
+  }
+
+  .ant-btn-primary {
+    color: white;
+    font-weight: 600;
+  }
+
+  .ant-input-affix-wrapper {
+    border-radius: 0.3rem;
+  }
+
+  .ant-btn-lg {
+    border-radius: 0.5rem;
+  }
+
+  .ant-form-item {
+    &:first-child {
+      margin-bottom: 0.5em;
+    }
+  }
+`;
+
+export {
+  ContentWrapper,
+  ContentContainer,
+  Content,
+  CategoryWrapper,
+  LoginWrapper,
+};
