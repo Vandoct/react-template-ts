@@ -60,7 +60,7 @@ const Home: FC = (): ReactElement => {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<TRadioNullable>(null);
   const [suggestions, setSuggestions] = useState<IRadio[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { slug } = useParams<HomeParams>();
   const { radio, radios } = useSelector<ApplicationState, IReduxRadioState>(
     (state) => state.radio
@@ -78,6 +78,10 @@ const Home: FC = (): ReactElement => {
     }
   }, [slug]);
 
+  useLayoutEffect(() => {
+    if (history.location.pathname === LOGIN) setIsModalVisible(true);
+  }, [history]);
+
   useUpdateEffect(() => {
     if (!radio) {
       setShow(false);
@@ -89,7 +93,7 @@ const Home: FC = (): ReactElement => {
   }, [radio]);
 
   useUpdateEffect(() => {
-    if (user) hideModal();
+    if (user && isModalVisible) hideModal();
   }, [user]);
 
   useUpdateEffect(() => {
