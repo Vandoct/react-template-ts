@@ -62,6 +62,7 @@ const Home: FC = (): ReactElement => {
   const [selected, setSelected] = useState<TRadioNullable>(null);
   const [suggestions, setSuggestions] = useState<IRadio[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [listRadio, setListRadio] = useState<ICategoryRadio[]>([]);
   const { slug } = useParams<HomeParams>();
   const { radio, radios } = useSelector<ApplicationState, IReduxRadioState>(
     (state) => state.radio
@@ -96,6 +97,21 @@ const Home: FC = (): ReactElement => {
   useUpdateEffect(() => {
     if (user && isModalVisible) hideModal();
   }, [user]);
+
+  useUpdateEffect(() => {
+    let categoryRadio: ICategoryRadio[] = [];
+
+    if (user != null && !isEmptyArray(user.favorites)) {
+      categoryRadio = [
+        {
+          category: 'Favorites',
+          radios: user.favorites,
+        },
+      ];
+    }
+
+    setListRadio([...categoryRadio, ...radios]);
+  }, [user, radios]);
 
   useUpdateEffect(() => {
     if (error) {
@@ -311,7 +327,7 @@ const Home: FC = (): ReactElement => {
             />
           </Header>
           <Content>
-            {radios.map((item, index) => (
+            {listRadio.map((item, index) => (
               <CategoryWrapper key={index}>
                 <h1>{item.category}</h1>
                 <ListRadio radios={item.radios} onClick={handleRadioClick} />
