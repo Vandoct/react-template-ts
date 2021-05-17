@@ -2,6 +2,7 @@ import { InputProps } from 'antd';
 import { FC, ReactElement } from 'react';
 import { IRadio } from 'redux/radio/types';
 import { isEmptyArray } from 'utils/helper';
+import SearchItem from './SearchItem';
 import { SearchStyled, SearchSuggestion, SearchWrapper } from './styled';
 
 interface ISearchSuggestionProps {
@@ -32,10 +33,11 @@ const SearchBar: FC<InputProps & ISearchSuggestionProps> = ({
       {!isEmptyArray(suggestions) && (
         <SearchSuggestion>
           {suggestions.map((radio) => (
-            <div key={radio.id} onClick={() => handleClick(radio)}>
-              <img src={radio.image} alt="Radio Logo" />
-              <span>{radio.title}</span>
-            </div>
+            <SearchItem
+              key={radio.id}
+              radio={radio}
+              onClick={() => handleClick(radio)}
+            />
           ))}
         </SearchSuggestion>
       )}
