@@ -4,7 +4,7 @@ import {
   ICommonErrorAction,
   ICommonFinishAction,
   ICommonSuccessAction,
-  IUser,
+  TUserNullable,
 } from './types';
 
 export const commonBegin = (): ICommonBeginAction => {
@@ -13,7 +13,7 @@ export const commonBegin = (): ICommonBeginAction => {
   };
 };
 
-export const commonSuccess = (user: IUser): ICommonSuccessAction => {
+export const commonSuccess = (user: TUserNullable): ICommonSuccessAction => {
   return {
     type: ECommonActionTypes.COMMON_SUCCESS,
     data: user,

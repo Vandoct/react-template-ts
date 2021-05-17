@@ -22,7 +22,7 @@ export interface ICommonBeginAction {
 
 export interface ICommonSuccessAction {
   type: ECommonActionTypes.COMMON_SUCCESS;
-  data: IUser;
+  data: TUserNullable;
 }
 
 export interface ICommonErrorAction {
@@ -35,8 +35,10 @@ export interface ICommonFinishAction {
 }
 
 export interface IReduxCommonState extends IReduxBaseState {
-  user: IUser | null;
+  user: TUserNullable;
 }
+
+export type TUserNullable = IUser | null;
 
 export type TCommonReducerActions =
   | ICommonBeginAction

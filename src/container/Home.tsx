@@ -30,7 +30,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, useHistory, useParams } from 'react-router-dom';
-import { clearError } from 'redux/common/fetcher';
+import { clearError, logout } from 'redux/common/fetcher';
 import { IReduxCommonState } from 'redux/common/types';
 import { getRadioDetail, getRadioList, reportRadio } from 'redux/radio/fetcher';
 import {
@@ -242,7 +242,7 @@ const Home: FC = (): ReactElement => {
   };
 
   const handleLogoutClick = () => {
-    console.log('logout');
+    dispatch(logout());
   };
 
   useDebouncedEffect(handleSearchRadio, 500, query);

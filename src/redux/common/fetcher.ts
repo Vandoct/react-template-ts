@@ -99,6 +99,11 @@ export const login = (
   }
 };
 
+export const logout = (): AppThunk => (dispatch: AppDispatch) => {
+  localStorageService.clearStorage();
+  dispatch(commonSuccess(null));
+};
+
 export const checkAuthState = (): AppThunk => (dispatch: AppDispatch) => {
   const user = localStorageService.getUser();
   if (user) {

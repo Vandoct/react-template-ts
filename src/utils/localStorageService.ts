@@ -23,6 +23,10 @@ class LocalStorageService {
     return JSON.parse(item) as IUser;
   };
 
+  clearUser = (): void => {
+    localStorage.removeItem(USER);
+  };
+
   setToken = (accessToken: string, expireToken: string): void => {
     localStorage.setItem(ACCESS_TOKEN, accessToken);
     localStorage.setItem(EXPIRE_TOKEN, expireToken);
@@ -39,6 +43,10 @@ class LocalStorageService {
   clearToken = (): void => {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(EXPIRE_TOKEN);
+  };
+
+  clearStorage = (): void => {
+    localStorage.clear();
   };
 }
 
