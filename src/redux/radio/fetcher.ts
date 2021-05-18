@@ -1,6 +1,6 @@
 import { AppDispatch, ApplicationState, AppThunk } from 'redux/store';
 import api from 'utils/api';
-import { getTimestamp, parseResponse } from 'utils/helper';
+import { getTimestamp, isEmptyArray, parseResponse } from 'utils/helper';
 import LocalStorageService from 'utils/localStorageService';
 import {
   radioBegin,
@@ -44,18 +44,20 @@ export const getRadioDetail = (id: string): AppThunk<Promise<string>> => async (
   dispatch(radioBegin());
 
   try {
-    const categoryRadios = getState().radio.radios;
-    let radio = findRadioById(id, categoryRadios);
+    let categoryRadios = getState().radio.radios;
+    if (isEmptyArray(categoryRadios)) {
+      await dispatch(getRadioList());
+      categoryRadios = getState().radio.radios;
+    }
 
+    const radio = findRadioById(id, categoryRadios);
     if (radio) {
       dispatch(radioDetail(radio));
       return 'Success';
     }
 
-    await dispatch(getRadioList());
-    radio = findRadioById(id, categoryRadios);
-    dispatch(radioDetail(radio));
-    return 'Success';
+    dispatch(radioDetail(null));
+    return 'Radio not found!';
   } catch (error) {
     dispatch(radioError(error));
     return error;

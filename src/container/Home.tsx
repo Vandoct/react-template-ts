@@ -76,12 +76,7 @@ const Home: FC = (): ReactElement => {
 
   useLayoutEffect(() => {
     setShow(slug != null);
-
-    if (slug && !isEmptyArray(radios)) {
-      setPlaying(false);
-      dispatch(getRadioDetail(slug));
-    }
-  }, [dispatch, slug, radios]);
+  }, [slug]);
 
   useLayoutEffect(() => {
     if (history.location.pathname === LOGIN) setIsModalVisible(true);
@@ -134,10 +129,21 @@ const Home: FC = (): ReactElement => {
   }, [dispatch, radios]);
 
   useEffect(() => {
-    if (!selected && slug && !isEmptyArray(radios)) {
+    // Stop when slug is undefined
+    if (!slug) return;
+
+    // Get detail radio when on detail radio then browser reloaded / first time
+    if (!selected && !radio) {
+      dispatch(getRadioDetail(slug));
+      return;
+    }
+
+    // Get detail radio when slug changed on browser back or forward
+    if (slug !== selected?.id && slug !== radio?.id) {
+      setPlaying(false);
       dispatch(getRadioDetail(slug));
     }
-  }, [dispatch, radios, selected, slug]);
+  }, [dispatch, radio, selected, slug]);
 
   useEffect(() => {
     if (!howl) return;
