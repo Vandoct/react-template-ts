@@ -75,10 +75,13 @@ const Home: FC = (): ReactElement => {
   const dispatch = useDispatch<AppDispatch>();
 
   useLayoutEffect(() => {
-    if (slug) {
-      setShow(true);
+    setShow(slug != null);
+
+    if (slug && !isEmptyArray(radios)) {
+      setPlaying(false);
+      dispatch(getRadioDetail(slug));
     }
-  }, [slug]);
+  }, [dispatch, slug, radios]);
 
   useLayoutEffect(() => {
     if (history.location.pathname === LOGIN) setIsModalVisible(true);
