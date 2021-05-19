@@ -63,6 +63,7 @@ const Home: FC = (): ReactElement => {
   const [suggestions, setSuggestions] = useState<IRadio[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [listRadio, setListRadio] = useState<ICategoryRadio[]>([]);
+  const [loading, setLoading] = useState(false);
   const { slug } = useParams<HomeParams>();
   const { radio, radios } = useSelector<ApplicationState, IReduxRadioState>(
     (state) => state.radio
@@ -148,15 +149,16 @@ const Home: FC = (): ReactElement => {
   useEffect(() => {
     if (!howl) return;
 
-    if (howl.playing()) {
-      howl.unload();
-      return;
-    }
+    howl.unload();
 
     if (playing) {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      setLoading(true);
+
+      howl.on('load', handleRadioLoaded);
       howl.on('loaderror', handleRadioError);
       howl.play();
+    } else {
+      setLoading(false);
     }
   }, [howl, playing]);
 
@@ -177,6 +179,7 @@ const Home: FC = (): ReactElement => {
 
     setQuery('');
     setPlaying(false);
+    setLoading(false);
     setSelected(data);
     history.push(data.id);
   };
@@ -217,6 +220,10 @@ const Home: FC = (): ReactElement => {
             'An error occurred when reporting radio, please try again later.',
         });
       });
+  };
+
+  const handleRadioLoaded = () => {
+    setLoading(false);
   };
 
   const handleRadioError = () => {
@@ -303,10 +310,10 @@ const Home: FC = (): ReactElement => {
         <NowPlaying
           image={selected?.image || ''}
           title={selected?.title || ''}
-          currentSong="Current Song"
+          currentSong={loading ? 'loading' : 'Current Song'}
         />
         <Player
-          spectrum={playing}
+          spectrum={!loading && playing}
           color={theme.text}
           isFavorite={favorite}
           isPlaying={playing}
