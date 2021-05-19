@@ -310,7 +310,7 @@ const Home: FC = (): ReactElement => {
         <NowPlaying
           image={selected?.image || ''}
           title={selected?.title || ''}
-          currentSong={loading ? 'loading' : 'Current Song'}
+          currentSong="Current Song"
         />
         <Player
           spectrum={!loading && playing}

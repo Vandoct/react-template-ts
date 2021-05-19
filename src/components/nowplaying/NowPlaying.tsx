@@ -1,5 +1,5 @@
+import NotFoundIllustration from 'assets/icon/not_found.svg';
 import { FC, ReactElement, useEffect, useState } from 'react';
-import { generateImagePlaceholder } from 'utils/generator';
 import NowPlayingWrapper from './styled';
 
 interface INowPlaying {
@@ -20,7 +20,7 @@ const NowPlaying: FC<INowPlaying> = ({
   }, [image]);
 
   const handleImageError = () => {
-    setSource(generateImagePlaceholder(220, 220));
+    setSource(NotFoundIllustration);
   };
 
   return (

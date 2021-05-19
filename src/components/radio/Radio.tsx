@@ -1,6 +1,6 @@
+import NotFoundIllustration from 'assets/icon/not_found.svg';
 import { FC, ReactElement, useState } from 'react';
 import { IRadio } from 'redux/radio/types';
-import { generateImagePlaceholder } from 'utils/generator';
 import { RadioWrapper } from './styled';
 
 interface IRadioProps {
@@ -12,7 +12,7 @@ const Radio: FC<IRadioProps> = ({ radio, onClick }): ReactElement => {
   const [source, setSource] = useState(radio.image);
 
   const handleImageError = () => {
-    setSource(generateImagePlaceholder(220, 220));
+    setSource(NotFoundIllustration);
   };
 
   const handleClick = () => {

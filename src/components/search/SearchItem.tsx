@@ -1,6 +1,6 @@
+import NotFoundIllustration from 'assets/icon/not_found.svg';
 import { FC, ReactElement, useState } from 'react';
 import { IRadio } from 'redux/radio/types';
-import { generateImagePlaceholder } from 'utils/generator';
 
 interface ISearchItemProps {
   radio: IRadio;
@@ -11,7 +11,7 @@ const SearchItem: FC<ISearchItemProps> = ({ radio, onClick }): ReactElement => {
   const [source, setSource] = useState(radio.image);
 
   const handleImageError = () => {
-    setSource(generateImagePlaceholder(50, 50));
+    setSource(NotFoundIllustration);
   };
 
   return (
